@@ -4,23 +4,14 @@ function onOpen() {
   ui.createMenu("Code")
     .addItem('Run code', "runCode")
     .addItem("See last output", "seeLastOutput")
-    .addItem("Edit packages", "editPackages")
+    .addItem("Manage packages", "managePackages")
     .addToUi()
 }
 
 function getCode() {
     let code = JSON.stringify(DocumentApp.getActiveDocument().getBody().getText())
 
-    const symbols = {
-      "\u201C": '\\"',
-      "\u201D": '\\"'
-    }
-
-    for (const symbol in symbols) {
-      code = code.replaceAll(symbol, symbols[symbol])
-    }
-
-    return code
+    return code.replaceAll(/[\u201C\u201D]/g, '\\"')
 }
 
 function showConsole(html) {
@@ -28,8 +19,8 @@ function showConsole(html) {
 }
 
 function runCode() { 
-  const packages = JSON.stringify(getPackages().split("\n").map(name => name.trim()))
-
+  const packages = JSON.stringify(getPackages().split("\n").map(name => name.trim()).filter(name => name.length))
+  
   const html = `
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
   <script>
@@ -54,7 +45,7 @@ function runCode() {
 
       result = String(result).replaceAll("<", "&lt;").replaceAll("\\n", "<br>")
 
-      google.script.run.storeOutput(result)
+      google.script.run.storeValue("lastOutput", result)
       document.body.innerHTML = result
     }
   </script>`
@@ -62,23 +53,19 @@ function runCode() {
   showConsole(html)
 }
 
-function storeOutput(result) {
-  PropertiesService.getScriptProperties().setProperty("lastOutput", result)
+function storeValue(name, value) {
+  PropertiesService.getScriptProperties().setProperty(name, value)
 }
 
 function seeLastOutput() { 
   showConsole(PropertiesService.getScriptProperties().getProperty("lastOutput"))
 }
 
-function savePackages(packages) {
-  PropertiesService.getScriptProperties().setProperty("packages", packages)
-}
-
 function getPackages() {
   return (PropertiesService.getScriptProperties().getProperty("packages") || "")
 }
 
-function editPackages() {
+function managePackages() {
   const html = `
   <!DOCTYPE html>
   <html>
@@ -99,11 +86,11 @@ function editPackages() {
           document.querySelector("textarea").value = packages
         }
         
-        google.script.run.withSuccessHandler(setPackagesValue).getPackages();
+        google.script.run.withSuccessHandler(setPackagesValue).getPackages()
 
         document.querySelector("textarea").addEventListener('input', e => {        
-          google.script.run.savePackages(e.target.value);
-        });
+          google.script.run.storeValue("packages", e.target.value)
+        })
       </script>
     </body>
   </html>
