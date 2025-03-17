@@ -7,22 +7,10 @@
         height: 100%;
         margin: 0;
       }
-
-      body {
-        display: flex;
-        align-items: stretch;
-        justify-content: stretch;
-      }
-      
-      textarea {
-        width: 100%; 
-        height: 100%; 
-        box-sizing: border-box;
-      }
     </style>
   </head>
-  <body>
-    <textarea placeholder="List packages here (line-separated)"></textarea>
+  <body style="display: flex; align-items: stretch; justify-content: stretch;">
+    <textarea style="width: 100%; height: 100%; box-sizing: border-box;" placeholder="List packages here (line-separated)"></textarea>
 
     <script>
       function setPackagesValue(packages) {
