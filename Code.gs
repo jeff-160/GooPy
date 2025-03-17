@@ -79,7 +79,35 @@ function getPackages() {
 }
 
 function editPackages() {
-  const html = HtmlService.createHtmlOutputFromFile("packages.html")
+  const html = `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <base target="_top">
+      <style>
+        html, body {
+          height: 100%;
+          margin: 0;
+        }
+      </style>
+    </head>
+    <body style="display: flex; align-items: stretch; justify-content: stretch;">
+      <textarea style="width: 100%; height: 100%; box-sizing: border-box;" placeholder="List packages here (line-separated)"></textarea>
 
-  DocumentApp.getUi().showModalDialog(html, "Packages")
+      <script>
+        function setPackagesValue(packages) {
+          document.querySelector("textarea").value = packages
+        }
+        
+        google.script.run.withSuccessHandler(setPackagesValue).getPackages();
+
+        document.querySelector("textarea").addEventListener('input', e => {        
+          google.script.run.savePackages(e.target.value);
+        });
+      </script>
+    </body>
+  </html>
+  `
+
+  DocumentApp.getUi().showModalDialog(HtmlService.createHtmlOutput(html), "Packages")
 }
