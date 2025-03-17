@@ -74,15 +74,15 @@ function runCode() {
 }
 
 function storeValue(name, value) {
-  PropertiesService.getScriptProperties().setProperty(name, value)
+  PropertiesService.getDocumentProperties().setProperty(name, value)
 }
 
 function seeLastOutput() { 
-  showConsole(PropertiesService.getScriptProperties().getProperty("lastOutput"))
+  showConsole(PropertiesService.getDocumentProperties().getProperty("lastOutput"))
 }
 
 function getArrayValue(name) {
-  return (PropertiesService.getScriptProperties().getProperty(name) || "")
+  return (PropertiesService.getDocumentProperties().getProperty(name) || "")
 }
 
 function getListUI(desc, script) {
