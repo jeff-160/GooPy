@@ -14,7 +14,7 @@ See last output
 
 Manage packages
 - List of external Python modules to include in the script (line-separated)
-- PIP alternative
+- pip alternative
 
 Manage includes
 - List of other documents/scripts to include in the script
