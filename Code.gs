@@ -19,10 +19,6 @@ function showConsole(html) {
   DocumentApp.getUi().showModalDialog(HtmlService.createHtmlOutput(html), "Console")
 }
 
-function includeDocument(id) {
-  return getCode(DocumentApp.openById(id))
-}
-
 function runCode() { 
   const convertToArray = str => str.split("\n").map(name => name.trim()).filter(name => name.length)
   
@@ -30,7 +26,7 @@ function runCode() {
   let html
 
   try {
-    const includes = JSON.stringify(convertToArray(getArrayValue("includes")).map(id => includeDocument(id)))
+    const includes = JSON.stringify(convertToArray(getArrayValue("includes")).map(id => getCode(DocumentApp.openById(id))))
 
     html = `
       <script src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
